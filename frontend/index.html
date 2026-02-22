@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Platform</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Marked for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background: #050810;
+            color: #e0f2fe;
+            overflow-x: hidden;
+        }
+
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #00ff88;
+            top: 10%;
+            left: 10%;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: #00d4ff;
+            bottom: 20%;
+            right: 15%;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(50px, -50px);
+            }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.3);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: #00ff88;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .agent-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .agent-item:hover {
+            background: rgba(0, 255, 136, 0.15);
+            transform: translateX(5px);
+            border-left-width: 6px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .agent-item.selected {
+            background: rgba(0, 212, 255, 0.15);
+            border-left: 6px solid #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .agent-item.selected .agent-status {
+            background: #00d4ff;
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+        .agent-item.selected .agent-name {
+            color: #00d4ff;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #e0f2fe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .agent-status {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .agent-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .chat-container {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 300px);
+            min-height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 15px;
+        }
+
+        .message {
+            margin-bottom: 25px;
+            animation: messageSlide 0.4s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #00d4ff, #0066ff);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .ai-avatar {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .message-role {
+            font-weight: 700;
+            color: #e0f2fe;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .message-content {
+            padding: 18px 24px;
+            border-radius: 12px;
+            line-height: 1.7;
+            margin-left: 46px;
+            word-break: break-word;
+        }
+
+        .user-message .message-content {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .ai-message .message-content {
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .message-content pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message-content code {
+            font-family: 'Source Code Pro', monospace;
+            color: #00ff88;
+        }
+
+        .message-content p {
+            margin-bottom: 12px;
+        }
+
+        .message-content ul,
+        .message-content ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 15px;
+            position: relative;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 18px 25px;
+            color: #e0f2fe;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.2);
+            background: rgba(0, 255, 136, 0.08);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            border-radius: 15px;
+            padding: 0 40px;
+            color: #050810;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: 46px;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #00ff88;
+            opacity: 0.8;
+        }
+
+        .thinking-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-background"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: false
+        });
+
+        function App() {
+            const [messages, setMessages] = useState([]);
+            const [input, setInput] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [agents, setAgents] = useState([]);
+            const [selectedAgent, setSelectedAgent] = useState(null);
+            const [thoughtLog, setThoughtLog] = useState('');
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            useEffect(scrollToBottom, [messages, loading]);
+
+            useEffect(() => {
+                fetch('http://localhost:5000/api/agents')
+                    .then(res => res.json())
+                    .then(data => data.status === 'success' && setAgents(data.agents))
+                    .catch(e => console.error('Agents load failed:', e));
+
+                setMessages([{
+                    role: 'ai',
+                    content: '### 시스템 초기화 완료\n\n**AI 에이전트 플랫폼**에 오신 것을 환영합니다. 저는 실시간 웹 검색, 데이터 분석 및 보고서 생성이 가능한 멀티 에이전트 시스템입니다. \n\n오늘 어떤 도움을 드릴까요?'
+                }]);
+            }, []);
+
+            const selectAgent = (agentName) => {
+                const prompts = {
+                    'WebSearch': '...에 대한 최신 정보를 검색해줘',
+                    'NewsSearch': '...에 대한 최신 뉴스 및 사건 사고를 찾아줘',
+                    'DataAnalyzer': '다음 데이터 혹은 트렌드를 분석해줘: ',
+                    'CodeGenerator': '...를 위한 코드를 생성해줘',
+                    'ReportCreator': '...에 대한 세부적인 전문 보고서를 작성해줘'
+                };
+                setSelectedAgent(agentName);
+                setInput(prompts[agentName] || '');
+                const inputEl = document.querySelector('.chat-input');
+                if (inputEl) inputEl.focus();
+            };
+
+            const sendMessage = async () => {
+                if (!input.trim() || loading) return;
+
+                const userMsg = { role: 'user', content: input };
+                setMessages(prev => [...prev, userMsg]);
+                setInput('');
+                setLoading(true);
+                setThoughtLog('요청 분석 및 정보 검색 중...');
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: input,
+                            session_id: 'user_session',
+                            selected_agent: selectedAgent
+                        })
+                    });
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        setMessages(prev => [...prev, { role: 'ai', content: data.message }]);
+                    } else {
+                        setMessages(prev => [...prev, { role: 'ai', content: `**Error:** ${data.message}` }]);
+                    }
+                } catch (e) {
+                    setMessages(prev => [...prev, { role: 'ai', content: '**연결 오류:** 백엔드 서버에 연결할 수 없습니다.' }]);
+                } finally {
+                    setLoading(false);
+                    setThoughtLog('');
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <header>
+                        <h1>AI 에이전트 플랫폼</h1>
+                        <div className="subtitle">에이전트 워크플로우 엔진 v2.5</div>
+                    </header>
+
+                    <div className="main-content">
+                        <aside className="sidebar">
+                            <h2>전문 에이전트 모드</h2>
+                            {agents.map((a, i) => (
+                                <div
+                                    key={i}
+                                    className={`agent-item ${selectedAgent === a.name ? 'selected' : ''}`}
+                                    onClick={() => selectAgent(a.name)}
+                                >
+                                    <div className="agent-name">
+                                        <div className="agent-status"></div>
+                                        {a.name}
+                                    </div>
+                                    <div className="agent-desc">{a.description}</div>
+                                </div>
+                            ))}
+                        </aside>
+
+                        <main className="chat-container">
+                            <div className="chat-messages">
+                                {messages.map((m, i) => (
+                                    <div key={i} className={`message ${m.role}-message`}>
+                                        <div className="message-header">
+                                            <div className={`message-avatar ${m.role}-avatar`}>{m.role[0].toUpperCase()}</div>
+                                            <div className="message-role">{m.role === 'user' ? '사용자' : 'AI 에이전트 시스템'}</div>
+                                        </div>
+                                        <div className="message-content" dangerouslySetInnerHTML={{ __html: marked.parse(m.content) }}></div>
+                                    </div>
+                                ))}
+                                {loading && (
+                                    <div className="message ai-message">
+                                        <div className="thinking-indicator">
+                                            <div className="thinking-dot"></div>
+                                            <div className="thinking-dot"></div>
+                                            <div className="thinking-dot"></div>
+                                            <span>{thoughtLog}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
+                            </div>
+
+                            <div className="chat-input-container">
+                                <input
+                                    className="chat-input"
+                                    placeholder="명령어를 입력하거나 에이전트에게 질문하세요..."
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    onKeyPress={e => e.key === 'Enter' && sendMessage()}
+                                    disabled={loading}
+                                />
+                                <button className="send-button" onClick={sendMessage} disabled={loading}>실행 (RUN)</button>
+                            </div>
+                        </main>
+                    </div>
+
+                    <div className="stats-bar">
+                        <div className="stat-item"><div className="stat-value">{agents.length}</div><div className="stat-label">핵심 모듈</div></div>
+                        <div className="stat-item"><div className="stat-value">{messages.length}</div><div className="stat-label">로그 기록</div></div>
+                        <div className="stat-item"><div className="stat-value">온라인</div><div className="stat-label">시스템 상태</div></div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>

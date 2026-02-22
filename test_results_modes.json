@@ -1,0 +1,62 @@
+[
+  {
+    "query": "BTS 광화문 공연 뉴스?",
+    "agent": "ReportCreator",
+    "status": "PASS",
+    "response": "(사용 엔진: [GoogleNews RSS])\n\n### BTS 광화문 공연 관련 최신 뉴스 보고서\n- **날짜**: 2026년 2월 20일\n- **출처**: [연합뉴스](https..."
+  },
+  {
+    "query": "현재 배구 트렌드 분석해줘",
+    "agent": "DataAnalyzer",
+    "status": "PASS",
+    "response": "(사용 엔진: NewsSearch)\n\n### [2026 배구 트렌드]\n- **날짜**: 2026년 1월 26일\n- **출처**: [스포츠Q](https://news.google.c..."
+  },
+  {
+    "query": "Python으로 가위바위보 게임 만들어줘",
+    "agent": "CodeGenerator",
+    "status": "PASS",
+    "response": "(사용 엔진: [CodeGenerator])\n\n### [Python으로 가위바위보 게임 만들기]\n- **설명**: 사용자와 컴퓨터가 가위바위보 게임을 플레이하는 간단한 Python..."
+  },
+  {
+    "query": "오늘 여자배구 경기 일정",
+    "agent": "NewsSearch",
+    "status": "PASS",
+    "response": "(사용 엔진: NewsSearch)\n\n### [2026년 2월 22일 여자배구 경기 일정 관련 정보]\n- **날짜**: 2026년 2월 22일\n- **출처**: 현재 여자배구 일정..."
+  },
+  {
+    "query": "인공지능의 미래에 대해 조사해줘",
+    "agent": "WebSearch",
+    "status": "PASS",
+    "response": "(사용 엔진: [WebSearch, DataAnalyzer])\n\n### [인공지능의 미래 전망]\n- **날짜**: 2026년 2월 22일\n- **출처**: 다양한 웹 소스 기반 분..."
+  },
+  {
+    "query": "삼성전자 실적 분석 및 향후 전망",
+    "agent": "DataAnalyzer",
+    "status": "PASS",
+    "response": "(사용 엔진: NewsSearch, DataAnalyzer)\n\n### 삼성전자 2026 실적 전망\n- **날짜**: 2026년 2월 21일\n- **출처 1**: [글로벌이코노믹](..."
+  },
+  {
+    "query": "서울 이번주말 축제 리포트 작성해줘",
+    "agent": "ReportCreator",
+    "status": "PASS",
+    "response": "(사용 엔진: GoogleNews RSS)\n\n## 서울 주말 축제 보고서\n\n### 1. 제34회 평창 대관령눈꽃축제\n- **날짜**: 2026년 2월 22일\n- **출처**: [네..."
+  },
+  {
+    "query": "Flask 서버 기본 코드 생성",
+    "agent": "CodeGenerator",
+    "status": "PASS",
+    "response": "(사용 엔진: CodeGenerator)\n\n### Flask 서버 기본 코드\n- **코드 설명**: 아래의 코드는 Flask 웹 애플리케이션을 시작하기 위한 기본적인 설정을 제공합..."
+  },
+  {
+    "query": "현재 환율 정보",
+    "agent": "WebSearch",
+    "status": "PASS",
+    "response": "(사용 엔진: DuckDuckGo-Search)\n\n### [현재 환율 정보]\n- **날짜**: 2026년 2월 22일\n- **출처**: 관련 정보 없음\n- **내용**: 현재 20..."
+  },
+  {
+    "query": "내일 날씨 뉴스",
+    "agent": "NewsSearch",
+    "status": "PASS",
+    "response": "(사용 엔진: NewsSearch)\n\n### 내일 서울 날씨 예보\n- **날짜**: 2026년 2월 23일\n- **출처**: [퍼블릭타임스](https://news.google.c..."
+  }
+]

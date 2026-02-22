@@ -1,0 +1,76 @@
+============================================================
+   AI AGENT PLATFORM - Quick Start Guide
+============================================================
+
+Location: G:\workAI\ai-agent-platform\
+
+------------------------------------------------------------
+IMPORTANT: API Key Setup
+------------------------------------------------------------
+
+This application supports BOTH:
+  - ANTHROPIC_API_KEY (recommended)
+  - OPENAI_API_KEY (fallback - you already have this!)
+
+Check your API keys:
+  > echo %ANTHROPIC_API_KEY%
+  > echo %OPENAI_API_KEY%
+
+If you have OPENAI_API_KEY set, you're good to go!
+The system will automatically use it.
+
+------------------------------------------------------------
+3 Steps to Start
+------------------------------------------------------------
+
+  Step 1: Check API Key
+     > echo %OPENAI_API_KEY%
+     (Should show your API key)
+
+  Step 2: install_clean.bat (Double Click)
+     - Auto install packages
+
+  Step 3: start.bat (Double Click)
+     - Auto start servers
+     - Browser will open automatically
+
+------------------------------------------------------------
+Files
+------------------------------------------------------------
+
+  install_clean.bat - Clean installation
+  start.bat         - Start server
+  QUICKSTART.md     - Detailed setup guide
+
+------------------------------------------------------------
+AI Agent Features
+------------------------------------------------------------
+
+  * News search and trend analysis
+  * Data analysis and insights
+  * Python/JavaScript code generation
+  * Automatic report creation
+  * Web search and information research
+
+------------------------------------------------------------
+Access Information
+------------------------------------------------------------
+
+  Frontend (Web UI): http://localhost:8080
+  Backend (API):     http://localhost:5000
+
+------------------------------------------------------------
+Note
+------------------------------------------------------------
+
+The system will automatically detect and use:
+  1. ANTHROPIC_API_KEY (if available)
+  2. OPENAI_API_KEY (if ANTHROPIC_API_KEY not found)
+
+You already have OPENAI_API_KEY, so no additional setup needed!
+
+------------------------------------------------------------
+
+Happy AI Agent Development!
+
+============================================================
